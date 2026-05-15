@@ -1,8 +1,7 @@
 package com.fullstack.pagos.controller;
 
 import com.fullstack.pagos.model.Pago;
-import com.fullstack.pagos.repository.PagoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fullstack.pagos.service.PagoService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,45 +11,36 @@ import java.util.Optional;
 @RequestMapping("/api/pagos")
 public class PagoController {
 
-    @Autowired
-    private PagoRepository pagoRepository;
+    private final PagoService pagoService;
+
+    public PagoController(PagoService pagoService) {
+        this.pagoService = pagoService;
+    }
 
     @GetMapping
     public List<Pago> obtenerTodos() {
-        return pagoRepository.findAll();
+        return pagoService.listarPagos();
     }
 
     @GetMapping("/{id}")
     public Optional<Pago> obtenerPorId(@PathVariable Long id) {
-        return pagoRepository.findById(id);
+        return pagoService.buscarPorId(id);
     }
 
     @PostMapping
     public Pago crearPago(@RequestBody Pago pago) {
-        return pagoRepository.save(pago);
+        return pagoService.guardarPago(pago);
     }
 
     @PutMapping("/{id}")
-    public Pago actualizarPago(@PathVariable Long id, @RequestBody Pago pagoActualizado) {
+    public Pago actualizarPago(@PathVariable Long id,
+            @RequestBody Pago pagoActualizado) {
 
-        Pago pago = pagoRepository.findById(id).orElse(null);
-
-        if (pago != null) {
-
-            pago.setReservaId(pagoActualizado.getReservaId());
-            pago.setMonto(pagoActualizado.getMonto());
-            pago.setMetodoPago(pagoActualizado.getMetodoPago());
-            pago.setEstado(pagoActualizado.getEstado());
-            pago.setFechaPago(pagoActualizado.getFechaPago());
-
-            return pagoRepository.save(pago);
-        }
-
-        return null;
+        return pagoService.actualizarPago(id, pagoActualizado);
     }
 
     @DeleteMapping("/{id}")
     public void eliminarPago(@PathVariable Long id) {
-        pagoRepository.deleteById(id);
+        pagoService.eliminarPago(id);
     }
 }
