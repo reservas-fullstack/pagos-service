@@ -1,5 +1,6 @@
 package com.fullstack.pagos.service;
 
+import com.fullstack.pagos.dto.PagoDTO;
 import com.fullstack.pagos.model.Pago;
 import com.fullstack.pagos.repository.PagoRepository;
 import org.springframework.stereotype.Service;
@@ -24,19 +25,28 @@ public class PagoService {
         return pagoRepository.findById(id);
     }
 
-    public Pago guardarPago(Pago pago) {
+    public Pago guardarPago(PagoDTO pagoDTO) {
+
+        Pago pago = new Pago();
+
+        pago.setReservaId(pagoDTO.getReservaId());
+        pago.setMonto(pagoDTO.getMonto());
+        pago.setMetodoPago(pagoDTO.getMetodoPago());
+        pago.setEstado(pagoDTO.getEstado());
+        pago.setFechaPago(pagoDTO.getFechaPago());
+
         return pagoRepository.save(pago);
     }
 
-    public Pago actualizarPago(Long id, Pago pagoActualizado) {
+    public Pago actualizarPago(Long id, PagoDTO pagoDTO) {
 
         return pagoRepository.findById(id).map(pago -> {
 
-            pago.setReservaId(pagoActualizado.getReservaId());
-            pago.setMonto(pagoActualizado.getMonto());
-            pago.setMetodoPago(pagoActualizado.getMetodoPago());
-            pago.setEstado(pagoActualizado.getEstado());
-            pago.setFechaPago(pagoActualizado.getFechaPago());
+            pago.setReservaId(pagoDTO.getReservaId());
+            pago.setMonto(pagoDTO.getMonto());
+            pago.setMetodoPago(pagoDTO.getMetodoPago());
+            pago.setEstado(pagoDTO.getEstado());
+            pago.setFechaPago(pagoDTO.getFechaPago());
 
             return pagoRepository.save(pago);
 

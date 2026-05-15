@@ -1,5 +1,6 @@
 package com.fullstack.pagos.controller;
 
+import com.fullstack.pagos.dto.PagoDTO;
 import com.fullstack.pagos.model.Pago;
 import com.fullstack.pagos.service.PagoService;
 import jakarta.validation.Valid;
@@ -29,15 +30,15 @@ public class PagoController {
     }
 
     @PostMapping
-    public Pago crearPago(@Valid @RequestBody Pago pago) {
-        return pagoService.guardarPago(pago);
+    public Pago crearPago(@Valid @RequestBody PagoDTO pagoDTO) {
+        return pagoService.guardarPago(pagoDTO);
     }
 
     @PutMapping("/{id}")
     public Pago actualizarPago(@PathVariable Long id,
-            @Valid @RequestBody Pago pagoActualizado) {
+            @Valid @RequestBody PagoDTO pagoDTO) {
 
-        return pagoService.actualizarPago(id, pagoActualizado);
+        return pagoService.actualizarPago(id, pagoDTO);
     }
 
     @DeleteMapping("/{id}")
