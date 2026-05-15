@@ -2,6 +2,7 @@ package com.fullstack.pagos.controller;
 
 import com.fullstack.pagos.model.Pago;
 import com.fullstack.pagos.service.PagoService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,13 +29,13 @@ public class PagoController {
     }
 
     @PostMapping
-    public Pago crearPago(@RequestBody Pago pago) {
+    public Pago crearPago(@Valid @RequestBody Pago pago) {
         return pagoService.guardarPago(pago);
     }
 
     @PutMapping("/{id}")
     public Pago actualizarPago(@PathVariable Long id,
-            @RequestBody Pago pagoActualizado) {
+            @Valid @RequestBody Pago pagoActualizado) {
 
         return pagoService.actualizarPago(id, pagoActualizado);
     }
