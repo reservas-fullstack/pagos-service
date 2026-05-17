@@ -24,4 +24,14 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
     }
+
+    @ExceptionHandler(RecursoNoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> manejarRecursoNoEncontrado(
+            RecursoNoEncontradoException ex) {
+
+        Map<String, String> error = new HashMap<>();
+        error.put("mensaje", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
 }

@@ -1,13 +1,16 @@
 package com.fullstack.pagos.controller;
 
 import com.fullstack.pagos.dto.PagoDTO;
+import com.fullstack.pagos.exception.RecursoNoEncontradoException;
 import com.fullstack.pagos.model.Pago;
 import com.fullstack.pagos.service.PagoService;
+
 import jakarta.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/pagos")
@@ -20,29 +23,44 @@ public class PagoController {
     }
 
     @GetMapping
-    public List<Pago> obtenerTodos() {
-        return pagoService.listarPagos();
+    public ResponseEntity<List<Pago>> obtenerTodos() {
+        return ResponseEntity.ok(pagoService.listarPagos());
     }
 
     @GetMapping("/{id}")
-    public Optional<Pago> obtenerPorId(@PathVariable Long id) {
-        return pagoService.buscarPorId(id);
+    public ResponseEntity<Pago> obtenerPorId(@PathVariable Long id) {
+
+        Pago pago = pagoService.buscarPorId(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "Pago no encontrado con ID: " + id));
+
+        return ResponseEntity.ok(pago);
     }
 
     @PostMapping
-    public Pago crearPago(@Valid @RequestBody PagoDTO pagoDTO) {
-        return pagoService.guardarPago(pagoDTO);
+    public ResponseEntity<Pago> crearPago(
+            @Valid @RequestBody PagoDTO pagoDTO) {
+
+        Pago pagoCreado = pagoService.guardarPago(pagoDTO);
+
+        return ResponseEntity.status(201).body(pagoCreado);
     }
 
     @PutMapping("/{id}")
-    public Pago actualizarPago(@PathVariable Long id,
+    public ResponseEntity<Pago> actualizarPago(
+            @PathVariable Long id,
             @Valid @RequestBody PagoDTO pagoDTO) {
 
-        return pagoService.actualizarPago(id, pagoDTO);
+        Pago pagoActualizado = pagoService.actualizarPago(id, pagoDTO);
+
+        return ResponseEntity.ok(pagoActualizado);
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarPago(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarPago(@PathVariable Long id) {
+
         pagoService.eliminarPago(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
